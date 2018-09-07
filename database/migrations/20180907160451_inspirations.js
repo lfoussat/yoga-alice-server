@@ -1,6 +1,6 @@
 
-exports.up = function(knex, Promise) {
-    return knex.schema.createTable('inspirations', table => {
+exports.up = function (knex, Promise) {
+  return knex.schema.createTable('inspirations', table => {
     table.increments()
     table.timestamp('created_at').defaultTo(knex.fn.now())
     table.string('title', 64)
@@ -12,8 +12,8 @@ exports.up = function(knex, Promise) {
 
     table.foreign('user_id').references('id').inTable('users').onDelete('cascade').onUpdate('cascade')
   })
-};
+}
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return knex.schema.dropTable('inspirations')
-};
+}

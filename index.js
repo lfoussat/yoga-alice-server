@@ -68,7 +68,7 @@ app.post('/add-inspiration', async (req, res) => {
     if (err) {
       console.log('there is an error', err)
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.json({error: 'File too big'})
+        return res.json({ error: 'File too big' })
       }
       if (req.fileValidationError) {
         return res.json({ error: 'Invalid type file' })
@@ -100,18 +100,18 @@ app.post('/update-inspiration/:id', async (req, res, next) => {
     if (err) {
       console.log('there is an error', err)
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.json({error: 'file too big'})
+        return res.json({ error: 'file too big' })
       }
       if (req.fileValidationError) {
         return res.json({ error: 'Invalid type file' })
       }
     }
 
-    console.log(req.params.id);
+    console.log(req.params.id)
 
     const inspirationId = Number(req.params.id)
     const inspirationInfo = req.body
-    console.log(inspirationInfo);
+    console.log(inspirationInfo)
     const newPicture = req.file
 
     db.updateInspirationInfo(inspirationId, inspirationInfo, newPicture)
@@ -122,14 +122,14 @@ app.post('/update-inspiration/:id', async (req, res, next) => {
 
 app.delete('/inspirations-yoga/:id', async (req, res) => {
   let inspirations = await db.getInspirations()
-  console.log(inspirations);
+  console.log(inspirations)
   const id = Number(req.params.id)
-  console.log(id);
+  console.log(id)
   const inspirationIndex = inspirations.findIndex(inspiration => inspiration.id === id)
-  console.log(inspirationIndex);
+  console.log(inspirationIndex)
   // rm file
   inspirations = inspirations.slice(0, inspirationIndex).concat(inspirations.slice(inspirationIndex + 1))
-  console.log(inspirations);
+  console.log(inspirations)
   res.json(inspirations)
 })
 
