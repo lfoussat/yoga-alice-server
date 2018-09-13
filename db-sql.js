@@ -14,12 +14,15 @@ const addInspiration = params => knex('inspirations')
   .returning('id', 'title', 'small_description', 'description', 'color', 'image_url')
   .insert(params)
 
-// const getInspirationById = id => {
-//   const filename = `inspiration${id}.json`
-//   const filepath = path.join(inspirationsDir, filename)
-
-//   return readFile(filepath, 'utf8').then(JSON.parse)
-// }
+const getInspirationById = async id => {
+  const inspiration = await knex
+    .select()
+    .table('inspirations')
+    .where('id', id)
+    .returning('id', 'title', 'small_description', 'description', 'color', 'image_url')
+  console.log(inspiration)
+  return inspiration.camelSnake()
+}
 
 // const updateInspiration = inspiration => {
 //   const filename = `inspiration${inspiration.id}.json`
