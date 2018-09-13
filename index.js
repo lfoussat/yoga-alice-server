@@ -13,7 +13,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // multer set up
-const uploadDir = path.join(__dirname, 'public/images')
+const uploadDir = path.join(__dirname, 'public/images/inspirations')
+const staticDir = path.join(__dirname, 'public/images')
 
 const storage = multer.diskStorage({
   destination: uploadDir,
@@ -38,7 +39,8 @@ const upload = multer({
 }).single('picture')
 
 // images - authorize Access
-app.use('/images', express.static(uploadDir)) // module to access images
+app.use('/images', express.static(staticDir)) // module to access images
+app.use('/images/inspirations', express.static(uploadDir)) // module to access images
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin)
