@@ -7,13 +7,13 @@ const db = require('./db-sql.js')
 
 const app = express()
 
-// MIDDLEWARES
-
+/* MIDDLEWARES */
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// multer set up
-const uploadDir = path.join(__dirname, 'public/images')
+/* MULTER SET UP - IMAGE UPLOAD & ACCESS */
+const uploadDir = path.join(__dirname, 'public/images/inspirations')
+const staticDir = path.join(__dirname, 'public/images')
 
 const storage = multer.diskStorage({
   destination: uploadDir,
@@ -38,7 +38,8 @@ const upload = multer({
 }).single('picture')
 
 // images - authorize Access
-app.use('/images', express.static(uploadDir)) // module to access images
+app.use('/images', express.static(staticDir)) // module to access images
+app.use('/images/inspirations', express.static(uploadDir)) // module to access images
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin)
@@ -49,11 +50,8 @@ app.use((req, res, next) => {
 // // for authentication
 //   res.header('Access-Control-Allow-Credentials', 'true') // important
 
-app.get('/', (req, res) => {
-  res.send('OK')
-})
-
-app.get('/inspirations-yoga', (req, res) => { // works
+/* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
+app.get('/inspirations', (req, res) => { // get all inpirations
   console.log('je demande les inspi')
   db.getInspirations()
     .then(inspirations => {
@@ -63,7 +61,15 @@ app.get('/inspirations-yoga', (req, res) => { // works
     .catch(err => res.status(500).end(err.message))
 })
 
-app.post('/add-inspiration', async (req, res) => {
+app.get('/inspirations/:id', async (req, res) => { // get one inspiration
+  const inspirations = await db.getInspirations()
+  const id = Number(req.params.id)
+  const inspiration = inspirations.find(inspiration => inspiration.id === id)
+
+  res.json(inspiration)
+})
+
+app.post('/inspirations', async (req, res) => { // create an inspiration
   upload(req, res, async (err) => {
     if (err) {
       console.log('there is an error', err)
@@ -87,15 +93,7 @@ app.post('/add-inspiration', async (req, res) => {
   })
 })
 
-app.get('/inspirations-yoga/:id', async (req, res) => {
-  const inspirations = await db.getInspirations()
-  const id = Number(req.params.id)
-  const inspiration = inspirations.find(inspiration => inspiration.id === id)
-
-  res.json(inspiration)
-})
-
-app.post('/update-inspiration/:id', async (req, res, next) => {
+app.post('/inspirations/:id', async (req, res, next) => { // update an inspiration
   upload(req, res, (err) => {
     if (err) {
       console.log('there is an error', err)
@@ -120,7 +118,7 @@ app.post('/update-inspiration/:id', async (req, res, next) => {
   })
 })
 
-app.delete('/inspirations-yoga/:id', async (req, res) => {
+app.delete('/inspirations/:id', async (req, res) => { // delete an inspiration
   let inspirations = await db.getInspirations()
   console.log(inspirations)
   const id = Number(req.params.id)
@@ -132,5 +130,7 @@ app.delete('/inspirations-yoga/:id', async (req, res) => {
   console.log(inspirations)
   res.json(inspirations)
 })
+
+/* END OF ROUTES FOR INSPIRATIONS */
 
 app.listen(5300, () => console.log(`j'écoute sur le port 5300`))
