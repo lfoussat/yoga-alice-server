@@ -11,7 +11,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-/* MULTER SET UP - IMAGE UPLOAD & ACCESS*/
+/* MULTER SET UP - IMAGE UPLOAD & ACCESS */
 const uploadDir = path.join(__dirname, 'public/images/inspirations')
 const staticDir = path.join(__dirname, 'public/images')
 
@@ -93,7 +93,7 @@ app.post('/inspirations', async (req, res) => { // create an inspiration
   })
 })
 
-app.post('/inspirations/:id', async (req, res, next) => { //update an inspiration
+app.post('/inspirations/:id', async (req, res, next) => { // update an inspiration
   upload(req, res, (err) => {
     if (err) {
       console.log('there is an error', err)
