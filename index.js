@@ -129,18 +129,12 @@ app.post('/inspirations/:id', async (req, res, next) => { // update an inspirati
   })
 })
 
-app.delete('/inspirations/:id', async (req, res) => { // delete an inspiration
-  let inspirations = await db.getInspirations()
-  console.log(inspirations)
+app.delete('/inspirations/:id', awaitRoute(async (req, res) => { // delete an inspiration
   const id = Number(req.params.id)
-  console.log(id)
-  const inspirationIndex = inspirations.findIndex(inspiration => inspiration.id === id)
-  console.log(inspirationIndex)
-  // rm file
-  inspirations = inspirations.slice(0, inspirationIndex).concat(inspirations.slice(inspirationIndex + 1))
-  console.log(inspirations)
-  res.json(inspirations)
-})
+  await db.deleteInspiration(id)
+
+  return 'deleted'
+}))
 
 /* END OF ROUTES FOR INSPIRATIONS */
 
