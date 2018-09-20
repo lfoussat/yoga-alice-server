@@ -11,6 +11,17 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+const awaitRoute = routeHandler => async (req, res, next) => {
+  try {
+    const result = await routeHandler(req, res)
+    if (result !== undefined) {
+      res.json(result)
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 /* MULTER SET UP - IMAGE UPLOAD & ACCESS */
 const uploadDir = path.join(__dirname, 'public/images/inspirations')
 const staticDir = path.join(__dirname, 'public/images')
