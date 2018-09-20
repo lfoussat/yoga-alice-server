@@ -9,40 +9,51 @@ const getInspirations = async () => {
   return inspirations.map(camelSnake)
 }
 
-const addInspiration = params => knex('inspirations')
-  .returning('id', 'title', 'small_description', 'description', 'color', 'image_url')
-  .insert(params)
-
-const getInspirationById = async id => {
+const getInspirationById = async id => { // get inspiration for front
   const inspiration = await knex
     .select()
     .table('inspirations')
     .where('id', id)
-    .returning('id', 'title', 'small_description', 'description', 'color', 'image_url')
-  return inspiration.camelSnake()
+    .returning('id', 'title', 'small_description', 'description', 'color', 'image_url', 'is_draft')
+  return inspiration.map(camelSnake)[0]
 }
 
-// const updateInspiration = inspiration => {
-//   const filename = `inspiration${inspiration.id}.json`
-//   const filepath = path.join(inspirationsDir, filename)
+const getInspirationByIdForBO = async id => { // get inspiration for back office
+  const inspiration = await knex
+    .select()
+    .table('inspirations')
+    .where('id', id)
+    .returning('id', 'draft_title', 'draft_small_description', 'draft_description', 'draft_color', 'draft_image_url', 'is_draft', 'modification_date', 'publication_date', 'created_at')
+  return inspiration.map(camelSnake)[0]
+}
 
-//   return writeFile(filepath, JSON.stringify(inspiration, null, 2), 'utf8')
-// }
+const createInspiration = async (params) => {
+  const [ id ] = await knex
+    .returning('id')
+    .insert(params)
+    .into('inspirations')
 
-// const updateInspirationInfo = async (inspirationId, inspirationInfo, newPicture) => {
-//   return getInspirationById(inspirationId)
-//     .then(inspiration => {
-//       inspiration.picture = newPicture ? newPicture.filename : inspiration.picture || 'default.jpg'
-//       inspiration.title = inspirationInfo.title ? inspirationInfo.title : inspiration.title
-//       inspiration.smalldescription = inspirationInfo.smalldescription ? inspirationInfo.smalldescription : inspiration.smalldescription
-//       inspiration.description = inspirationInfo.description ? inspirationInfo.description : inspiration.description
+  return { id }
+}
 
-//       return updateInspiration(inspiration)
-//     })
-// }
+const updateInspirationImg = ({ id, image }) => knex('inspirations')
+  .where('id', id)
+  .update('image_url', image)
+
+const updateInspiration = (id, params) => knex('inspirations')
+  .where('id', id)
+  .update(params)
+
+const deleteInspiration = id => knex('inspirations')
+  .where('id', id)
+  .del()
 
 module.exports = {
   getInspirations,
-  addInspiration,
-  getInspirationById
+  getInspirationById,
+  getInspirationByIdForBO,
+  createInspiration,
+  deleteInspiration,
+  updateInspirationImg,
+  updateInspiration
 }
