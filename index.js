@@ -107,6 +107,12 @@ app.post('/inspirations', awaitRoute(async req => { // create an inspiration
     image_url: 'default.jpeg',
     small_description: '',
     description: '',
+    draft_title: title,
+    draft_color: '#f1f7ed',
+    draft_image_url: 'default.jpeg',
+    draft_small_description: '',
+    draft_description: '',
+    is_draft: true
   }
   const { id } = await db.createInspiration(params)
 
