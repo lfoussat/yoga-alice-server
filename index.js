@@ -85,10 +85,16 @@ app.get('/:side/inspirations', async (req, res) => { // get all inpirations
   // gestion des erreurs .catch(err => console.error(error))
 })
 
-app.get('/inspirations/:id', async (req, res) => { // get one inspiration
-  const inspirations = await db.getInspirations()
+app.get('/:side/inspirations/:id', async (req, res) => { // get one inspiration
   const id = Number(req.params.id)
-  const inspiration = inspirations.find(inspiration => inspiration.id === id)
+  const side = req.params.side
+  let inspiration = {}
+
+  if (side === 'bo') {
+    inspiration = await db.getInspirationByIdForBO(id)
+  } else if (side === 'fo') {
+    inspiration = await db.getInspirationById(id)
+  }
 
   res.json(inspiration)
 })
