@@ -144,4 +144,13 @@ app.delete('/inspirations/:id', async (req, res) => { // delete an inspiration
 
 /* END OF ROUTES FOR INSPIRATIONS */
 
+/* HANDLE ERRORS */
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(500).json({ error: err.message })
+  } else {
+    res.status(404).json({ error: 'Not Found' })
+  }
+})
+
 app.listen(5300, () => console.log(`j'écoute sur le port 5300`))
