@@ -9,9 +9,6 @@ const getInspirations = async () => {
   return inspirations.map(camelSnake)
 }
 
-const addInspiration = params => knex('inspirations')
-  .returning('id', 'title', 'small_description', 'description', 'color', 'image_url')
-  .insert(params)
 
 const getInspirationById = async id => {
   const inspiration = await knex
@@ -22,6 +19,11 @@ const getInspirationById = async id => {
   return inspiration.camelSnake()
 }
 
+const createInspiration = async (params) => {
+  const [ id ] = await knex
+    .returning('id')
+    .insert(params)
+    .into('inspirations')
 
 // const updateInspiration = inspiration => {
 //   const filename = `inspiration${inspiration.id}.json`
@@ -49,5 +51,6 @@ module.exports = {
   getInspirations,
   addInspiration,
   getInspirationById
+  createInspiration,
   deleteInspiration,
 }
