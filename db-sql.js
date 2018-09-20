@@ -22,6 +22,10 @@ const getInspirationById = async id => {
   return inspiration.camelSnake()
 }
 
+const deleteInspiration = id => knex('inspirations')
+  .where('id', id)
+  .del()
+
 // const updateInspiration = inspiration => {
 //   const filename = `inspiration${inspiration.id}.json`
 //   const filepath = path.join(inspirationsDir, filename)
@@ -45,4 +49,5 @@ module.exports = {
   getInspirations,
   addInspiration,
   getInspirationById
+  deleteInspiration,
 }
