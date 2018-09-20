@@ -36,10 +36,6 @@ const createInspiration = async (params) => {
   return { id }
 }
 
-const updateInspirationImg = ({ id, image }) => knex('inspirations')
-  .where('id', id)
-  .update('image_url', image)
-
 const updateInspiration = (id, params) => knex('inspirations')
   .where('id', id)
   .update(params)
@@ -54,6 +50,5 @@ module.exports = {
   getInspirationByIdForBO,
   createInspiration,
   deleteInspiration,
-  updateInspirationImg,
   updateInspiration
 }
