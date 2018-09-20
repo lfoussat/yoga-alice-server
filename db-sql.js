@@ -57,8 +57,8 @@ const deleteInspiration = id => knex('inspirations')
 
 module.exports = {
   getInspirations,
-  addInspiration,
-  getInspirationById
+  getInspirationById,
+  getInspirationByIdForBO,
   createInspiration,
   deleteInspiration,
 }
