@@ -80,29 +80,20 @@ app.get('/inspirations/:id', async (req, res) => { // get one inspiration
   res.json(inspiration)
 })
 
-app.post('/inspirations', async (req, res) => { // create an inspiration
-  upload(req, res, async (err) => {
-    if (err) {
-      console.log('there is an error', err)
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.json({ error: 'File too big' })
-      }
-      if (req.fileValidationError) {
-        return res.json({ error: 'Invalid type file' })
-      }
-    }
+app.post('/inspirations', awaitRoute(async req => { // create an inspiration
+  const title = req.body.title
+  const params = {
+    title: title,
+    color: '#f1f7ed',
+    image_url: 'default.jpeg',
+    small_description: '',
+    description: '',
+  }
+  const { id } = await db.createInspiration(params)
 
-    const inspiration = req.body
-    console.log(inspiration)
-
-    inspiration.createdAt = Date.now()
-    inspiration.picture = req.file ? req.file.filename : 'default.jpg'
-
-    await db.addInspiration(inspiration)
-      .then(() => res.json('ok'))
-      .catch(err => res.status(500).end(err.message))
-  })
-})
+  return { id }
+}))
+// userId: req.token.id
 
 app.post('/inspirations/:id', async (req, res, next) => { // update an inspiration
   upload(req, res, (err) => {
