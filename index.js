@@ -62,14 +62,27 @@ app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Credentials', 'true') // important
 
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
-app.get('/inspirations', (req, res) => { // get all inpirations
-  console.log('je demande les inspi')
-  db.getInspirations()
-    .then(inspirations => {
-      console.log(inspirations)
-      res.json(inspirations)
-    })
-    .catch(err => res.status(500).end(err.message))
+app.get('/:side/inspirations', async (req, res) => { // get all inpirations
+  const side = req.params.side
+  const inspirations = await db.getInspirations()
+
+  if (side === 'bo') {
+    res.json(inspirations)
+  } else if (side === 'fo') {
+    const publishedInspirations = inspirations
+      .filter(i => i.publicationDate !== null)
+      .map(i => {
+        return {
+          id: i.id,
+          title: i.title,
+          smallDescription: i.smallDescription,
+          color: i.color
+        }
+      })
+
+    res.json(publishedInspirations)
+  }
+  // gestion des erreurs .catch(err => console.error(error))
 })
 
 app.get('/inspirations/:id', async (req, res) => { // get one inspiration
