@@ -33,24 +33,17 @@ const createInspiration = async (params) => {
     .insert(params)
     .into('inspirations')
 
-// const updateInspiration = inspiration => {
-//   const filename = `inspiration${inspiration.id}.json`
-//   const filepath = path.join(inspirationsDir, filename)
+  return { id }
+}
 
-//   return writeFile(filepath, JSON.stringify(inspiration, null, 2), 'utf8')
-// }
+const updateInspirationImg = ({ id, image }) => knex('inspirations')
+  .where('id', id)
+  .update('image_url', image)
 
-// const updateInspirationInfo = async (inspirationId, inspirationInfo, newPicture) => {
-//   return getInspirationById(inspirationId)
-//     .then(inspiration => {
-//       inspiration.picture = newPicture ? newPicture.filename : inspiration.picture || 'default.jpg'
-//       inspiration.title = inspirationInfo.title ? inspirationInfo.title : inspiration.title
-//       inspiration.smalldescription = inspirationInfo.smalldescription ? inspirationInfo.smalldescription : inspiration.smalldescription
-//       inspiration.description = inspirationInfo.description ? inspirationInfo.description : inspiration.description
+const updateInspiration = (id, params) => knex('inspirations')
+  .where('id', id)
+  .update(params)
 
-//       return updateInspiration(inspiration)
-//     })
-// }
 const deleteInspiration = id => knex('inspirations')
   .where('id', id)
   .del()
@@ -61,4 +54,6 @@ module.exports = {
   getInspirationByIdForBO,
   createInspiration,
   deleteInspiration,
+  updateInspirationImg,
+  updateInspiration
 }
