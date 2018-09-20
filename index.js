@@ -46,7 +46,7 @@ const upload = multer({
   limits: { // limited at 5 Mo
     fileSize: 5000000
   }
-}).single('picture')
+}).single('draftImageUrl')
 
 // images - authorize Access
 app.use('/images', express.static(staticDir)) // module to access images
@@ -132,16 +132,42 @@ app.post('/inspirations/:id', async (req, res, next) => { // update an inspirati
       }
     }
 
-    console.log(req.params.id)
+    const id = Number(req.params.id)
+    const { draftTitle, draftSmallDescription, draftDescription, draftColor, isDraft } = req.body
+    const params = {
+      draft_title: draftTitle,
+      draft_small_description: draftSmallDescription,
+      draft_description: draftDescription,
+      draft_color: draftColor,
+      is_draft: isDraft,
+      modification_date: new Date()
+    }
 
-    const inspirationId = Number(req.params.id)
-    const inspirationInfo = req.body
-    console.log(inspirationInfo)
-    const newPicture = req.file
+    if (isDraft === 'true') { // save as draft
+      if (req.file) {
+        params['draft_image_url'] = req.file.originalname
+      }
 
-    db.updateInspirationInfo(inspirationId, inspirationInfo, newPicture)
-      .then(() => res.json('ok'))
-      .catch(next)
+      db.updateInspiration(id, params)
+        .then(() => res.json('ok'))
+        .catch(next)
+    } else if (isDraft === 'false') { // publish
+      if (req.file) {
+        params['image_url'] = req.file.originalname
+        params['draft_image_url'] = req.file.originalname
+      } else if (req.body.draftImageUrl) {
+        params['image_url'] = req.body.draftImageUrl
+      }
+      params.title = draftTitle
+      params['small_description'] = draftSmallDescription
+      params['description'] = draftDescription
+      params['color'] = draftColor
+      params['publication_date'] = new Date()
+
+      db.updateInspiration(id, params)
+        .then(() => res.json('ok'))
+        .catch(next)
+    }
   })
 })
 
