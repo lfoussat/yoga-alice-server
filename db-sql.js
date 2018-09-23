@@ -24,6 +24,7 @@ const getInspirationById = async id => { // get inspiration for front
     .table('inspirations')
     .where('id', id)
     .returning('id', 'title', 'small_description', 'description', 'color', 'image_url', 'is_draft')
+
   return inspiration.map(camelSnake)[0]
 }
 
@@ -33,6 +34,7 @@ const getInspirationByIdForBO = async id => { // get inspiration for back office
     .table('inspirations')
     .where('id', id)
     .returning('id', 'draft_title', 'draft_small_description', 'draft_description', 'draft_color', 'draft_image_url', 'is_draft', 'modification_date', 'publication_date', 'created_at')
+
   return inspiration.map(camelSnake)[0]
 }
 
