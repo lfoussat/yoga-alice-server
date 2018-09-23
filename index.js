@@ -56,11 +56,9 @@ app.use('/images/inspirations', express.static(uploadDir)) // module to access i
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Methods', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, X-Access-Token')
   next()
 })
-// // for authentication
-//   res.header('Access-Control-Allow-Credentials', 'true') // important
 
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
 app.get('/:side/inspirations', async (req, res) => { // get all inpirations
