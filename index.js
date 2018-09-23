@@ -67,18 +67,18 @@ app.get('/fo/inspirations', async (req, res) => { // get all inpirations
   const inspirations = await db.getInspirations()
   console.log(inspirations)
   const publishedInspirations = inspirations
-      .filter(i => i.publicationDate !== null)
-      .map(i => {
-        return {
-          id: i.id,
-          title: i.title,
-          smallDescription: i.smallDescription,
-          color: i.color
-        }
-      })
-    console.log(publishedInspirations)
+    .filter(i => i.publicationDate !== null)
+    .map(i => {
+      return {
+        id: i.id,
+        title: i.title,
+        smallDescription: i.smallDescription,
+        color: i.color
+      }
+    })
+  console.log(publishedInspirations)
 
-    res.json(publishedInspirations)
+  res.json(publishedInspirations)
   // gestion des erreurs .catch(err => console.error(error))
 })
 
