@@ -209,6 +209,8 @@ app.delete('/inspirations/:id', auth.requireToken, awaitRoute(async (req, res) =
 
 /* END OF ROUTES FOR INSPIRATIONS */
 
+/* AUTHENTICATION */
+app.post('/users', awaitRoute(auth.createUser))
 /* HANDLE ERRORS */
 app.use((err, req, res, next) => {
   if (err) {
