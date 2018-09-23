@@ -112,6 +112,7 @@ app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all 
 //   }
 //   // gestion des erreurs .catch(err => console.error(error))
 // })
+app.get('/:side/inspirations/:id', async (req, res) => { // get one inspiration + TOKEN POUR USER INSPIRATIONS
   const id = Number(req.params.id)
   const side = req.params.side
   let inspiration = {}
