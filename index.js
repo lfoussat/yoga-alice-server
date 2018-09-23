@@ -61,14 +61,12 @@ app.use((req, res, next) => {
 })
 
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
-app.get('/:side/inspirations', async (req, res) => { // get all inpirations
-  const side = req.params.side
-  const inspirations = await db.getInspirations()
 
-  if (side === 'bo') {
-    res.json(inspirations)
-  } else if (side === 'fo') {
-    const publishedInspirations = inspirations
+app.get('/fo/inspirations', async (req, res) => { // get all inpirations
+  console.log('coucou')
+  const inspirations = await db.getInspirations()
+  console.log(inspirations)
+  const publishedInspirations = inspirations
       .filter(i => i.publicationDate !== null)
       .map(i => {
         return {
@@ -78,13 +76,42 @@ app.get('/:side/inspirations', async (req, res) => { // get all inpirations
           color: i.color
         }
       })
+    console.log(publishedInspirations)
 
     res.json(publishedInspirations)
-  }
   // gestion des erreurs .catch(err => console.error(error))
 })
 
-app.get('/:side/inspirations/:id', async (req, res) => { // get one inspiration
+app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all inpirations
+  console.log(req.token.id)
+  const inspirations = await db.getUserInspirations(req.token.id)
+
+  res.json(inspirations)
+})
+
+// app.get('/:side/inspirations', async (req, res) => { // get all inpirations
+//   const side = req.params.side
+//   const inspirations = await db.getInspirations()
+
+//   if (side === 'bo') {
+//     //auth.requireToken()
+//     res.json(inspirations)
+//   } else if (side === 'fo') {
+//     const publishedInspirations = inspirations
+//       .filter(i => i.publicationDate !== null)
+//       .map(i => {
+//         return {
+//           id: i.id,
+//           title: i.title,
+//           smallDescription: i.smallDescription,
+//           color: i.color
+//         }
+//       })
+
+//     res.json(publishedInspirations)
+//   }
+//   // gestion des erreurs .catch(err => console.error(error))
+// })
   const id = Number(req.params.id)
   const side = req.params.side
   let inspiration = {}
