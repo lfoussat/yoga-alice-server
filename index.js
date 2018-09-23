@@ -140,7 +140,8 @@ app.post('/inspirations', auth.requireToken, awaitRoute(async req => { // create
     draft_image_url: 'default.jpeg',
     draft_small_description: '',
     draft_description: '',
-    is_draft: true
+    is_draft: true,
+    user_id: userId
   }
   const { id } = await db.createInspiration(params)
 
