@@ -200,7 +200,7 @@ app.post('/inspirations/:id', async (req, res, next) => { // update an inspirati
   })
 })
 
-app.delete('/inspirations/:id', awaitRoute(async (req, res) => { // delete an inspiration
+app.delete('/inspirations/:id', auth.requireToken, awaitRoute(async (req, res) => { // delete an inspiration
   const id = Number(req.params.id)
   await db.deleteInspiration(id)
 
