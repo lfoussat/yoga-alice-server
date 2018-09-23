@@ -10,6 +10,7 @@ const app = express()
 /* MIDDLEWARES */
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(auth.tokenParser)
 
 const awaitRoute = routeHandler => async (req, res, next) => {
   try {
