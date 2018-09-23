@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const multer = require('multer')
 const path = require('path')
-
+const auth = require('./auth/local.js')
 const db = require('./db-sql.js')
 
 const app = express()
