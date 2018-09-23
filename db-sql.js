@@ -53,6 +53,10 @@ const deleteInspiration = id => knex('inspirations')
   .where('id', id)
   .del()
 
+// USERS
+
+const getUsers = () => knex('users')
+  .select()
 module.exports = {
   getInspirations,
   getUserInspirations,
@@ -61,4 +65,5 @@ module.exports = {
   createInspiration,
   deleteInspiration,
   updateInspiration
+  getUsers,
 }
