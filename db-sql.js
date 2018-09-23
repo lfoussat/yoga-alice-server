@@ -67,6 +67,11 @@ const updateUser = param => knex('users')
   .where('id', param.id)
   .update(param)
 
+const getUserByEmail = email => knex('users')
+  .select()
+  .where('email', email)
+  .first()
+
 module.exports = {
   getInspirations,
   getUserInspirations,
@@ -74,7 +79,8 @@ module.exports = {
   getInspirationByIdForBO,
   createInspiration,
   deleteInspiration,
-  updateInspiration
+  updateInspiration,
+  getUserByEmail,
   getUsers,
   createUser
 }
