@@ -149,7 +149,7 @@ app.post('/inspirations', auth.requireToken, awaitRoute(async req => { // create
 }))
 // userId: req.token.id
 
-app.post('/inspirations/:id', async (req, res, next) => { // update an inspiration
+app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // update an inspiration
   upload(req, res, (err) => {
     if (err) {
       console.log('there is an error', err)
