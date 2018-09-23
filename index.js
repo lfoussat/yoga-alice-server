@@ -125,8 +125,10 @@ app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all 
   res.json(inspiration)
 })
 
-app.post('/inspirations', awaitRoute(async req => { // create an inspiration
+app.post('/inspirations', auth.requireToken, awaitRoute(async req => { // create an inspiration
   const title = req.body.title
+  const userId = req.token.id
+  console.log(userId)
   const params = {
     title: title,
     color: '#f1f7ed',
