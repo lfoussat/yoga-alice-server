@@ -63,6 +63,10 @@ const createUser = params => knex
   .insert(params)
   .into('users')
 
+const updateUser = param => knex('users')
+  .where('id', param.id)
+  .update(param)
+
 module.exports = {
   getInspirations,
   getUserInspirations,
