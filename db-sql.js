@@ -6,6 +6,15 @@ const camelSnake = obj => _.mapKeys(obj, (value, key) => _.camelCase(key))
 const getInspirations = async () => {
   const inspirations = await knex('inspirations')
     .select()
+
+  return inspirations.map(camelSnake)
+}
+
+const getUserInspirations = async userId => {
+  const inspirations = await knex('inspirations')
+    .select()
+    .where('user_id', userId)
+
   return inspirations.map(camelSnake)
 }
 
@@ -46,6 +55,7 @@ const deleteInspiration = id => knex('inspirations')
 
 module.exports = {
   getInspirations,
+  getUserInspirations,
   getInspirationById,
   getInspirationByIdForBO,
   createInspiration,
