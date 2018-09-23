@@ -57,6 +57,12 @@ const deleteInspiration = id => knex('inspirations')
 
 const getUsers = () => knex('users')
   .select()
+
+const createUser = params => knex
+  .returning('id')
+  .insert(params)
+  .into('users')
+
 module.exports = {
   getInspirations,
   getUserInspirations,
@@ -66,4 +72,5 @@ module.exports = {
   deleteInspiration,
   updateInspiration
   getUsers,
+  createUser
 }
