@@ -84,5 +84,6 @@ module.exports = {
   updateInspiration,
   getUserByEmail,
   getUsers,
+  updateUser,
   createUser
 }
