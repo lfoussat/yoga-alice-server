@@ -88,8 +88,10 @@ app.get('/fo/inspirations', async (req, res) => { // get all inpirations
 app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all inpirations
   console.log(req.token.id)
   const inspirations = await db.getUserInspirations(req.token.id)
+  const iSortByModificationDate = inspirations.sort((a, b) => b.modificationDate - a.modificationDate)
+  console.log(iSortByModificationDate)
 
-  res.json(inspirations)
+  res.json(iSortByModificationDate)
 })
 
 // app.get('/:side/inspirations', async (req, res) => { // get all inpirations
