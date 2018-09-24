@@ -73,9 +73,12 @@ app.get('/fo/inspirations', async (req, res) => { // get all inpirations
         id: i.id,
         title: i.title,
         smallDescription: i.smallDescription,
-        color: i.color
+        color: i.color,
+        publicationDate: i.publicationDate
       }
     })
+    .sort((a, b) => b.publicationDate - a.publicationDate)
+
   console.log(publishedInspirations)
 
   res.json(publishedInspirations)
