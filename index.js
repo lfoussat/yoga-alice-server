@@ -73,6 +73,16 @@ app.get('/fo/home', async (req, res) => {
 
   res.json(home)
 })
+
+app.get('/bo/home', auth.requireToken, async (req, res) => {
+  console.log('je vais chercher la data pour la home BO')
+  const home = await db.getHomeDataBO()
+  console.log('home BO : ', home)
+  console.log('home blocs : ', home.blocs[0].draftTitle)
+
+  res.json(home)
+})
+
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
 
 app.get('/fo/inspirations', async (req, res) => { // get all inpirations
