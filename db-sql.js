@@ -3,6 +3,29 @@ const _ = require('lodash')
 
 const camelSnake = obj => _.mapKeys(obj, (value, key) => _.camelCase(key))
 
+const getHomeDataFO = async () => {
+  const carousel = await knex('carousel_home')
+    .select('title', 'image_url', 'uid')
+  const slides = carousel
+    .map(s => camelSnake(s))
+    .sort((a, b) => a.uid - b.uid)
+    .map(s => ({ title: s.title, imageUrl: s.imageUrl }))
+  const quotations = await knex('quotations')
+    .select('ref', 'quotation', 'caption')
+  const contact = await knex('contact_home')
+    .select('title', 'content', 'fbk_btn_link', 'email_btn_link')
+  const blocs = await knex('home_blocs')
+    .select('ref', 'title', 'content', 'image_url', 'btn_text', 'btn_link')
+
+  const home = {
+    carousel: slides,
+    quotations: quotations,
+    blocs: blocs.map(camelSnake),
+    contact: contact.map(camelSnake)[0]
+  }
+
+  return home
+}
 const getInspirations = async () => {
   const inspirations = await knex('inspirations')
     .select()
@@ -86,4 +109,5 @@ module.exports = {
   getUsers,
   updateUser,
   createUser
+  getHomeDataFO,
 }
