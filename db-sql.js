@@ -133,7 +133,7 @@ module.exports = {
   getUserByEmail,
   getUsers,
   updateUser,
-  createUser
+  createUser,
   getHomeDataFO,
   getHomeDataBO
 }
