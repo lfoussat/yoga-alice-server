@@ -60,6 +60,19 @@ app.use((req, res, next) => {
   next()
 })
 
+/* HOME */
+
+app.get('/fo/home', async (req, res) => {
+  console.log('je vais chercher la data pour la home')
+  const home = await db.getHomeDataFO()
+  console.log('home : ', home)
+  // const carousel = await db.getData('carousel_home')
+  // const mySlides = carousel
+  //   .sort((a, b) => a.uid - b.uid)
+  //   .map(s => ({ title: s.title, imageUrl: s.imageUrl }))
+
+  res.json(home)
+})
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
 
 app.get('/fo/inspirations', async (req, res) => { // get all inpirations
