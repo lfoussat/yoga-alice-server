@@ -173,6 +173,7 @@ app.post('/inspirations', auth.requireToken, awaitRoute(async req => { // create
     user_id: userId
   }
   const { id } = await db.createInspiration(params)
+  console.log('new id : ', id)
 
   return { id }
 }))
