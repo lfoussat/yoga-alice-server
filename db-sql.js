@@ -26,6 +26,31 @@ const getHomeDataFO = async () => {
 
   return home
 }
+
+const getHomeDataBO = async () => {
+  const carousel = await knex('carousel_home')
+    .select('draft_title', 'draft_image_url', 'draft_uid', 'is_draft')
+  const slides = carousel
+    .map(s => camelSnake(s))
+    .sort((a, b) => a.draftUid - b.draftUid)
+    //.map(s => ({ draftTitle: s.draftTitle, draftImageUrl: s.draftImageUrl }))
+  const quotations = await knex('quotations')
+    .select('ref', 'draft_quotation', 'draft_caption', 'is_draft')
+  const contact = await knex('contact_home')
+    .select('title', 'draft_content', 'draft_fbk_btn_link', 'draft_email_btn_link', 'is_draft')
+  const blocs = await knex('home_blocs')
+    .select('ref', 'draft_title', 'draft_content', 'draft_image_url', 'draft_btn_text', 'draft_btn_link', 'is_draft')
+
+  const home = {
+    carousel: slides,
+    quotations: quotations,
+    blocs: blocs.map(camelSnake),
+    contact: contact.map(camelSnake)[0]
+  }
+
+  return home
+}
+
 const getInspirations = async () => {
   const inspirations = await knex('inspirations')
     .select()
@@ -110,4 +135,5 @@ module.exports = {
   updateUser,
   createUser
   getHomeDataFO,
+  getHomeDataBO
 }
