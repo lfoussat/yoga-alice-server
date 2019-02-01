@@ -4,6 +4,7 @@ const multer = require('multer')
 const path = require('path')
 const auth = require('./auth/local.js')
 const db = require('./db-sql.js')
+const port = process.env.PORT || 5300
 
 const app = express()
 
@@ -36,7 +37,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  fileFilter: (req, file, cb) => { // accepts only images
+  fileFilter: (req, file, cb) => {
+    // accepts only images
     const ext = path.extname(file.originalname).toLowerCase()
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
       req.fileValidationError = 'Invalid file type'
@@ -44,7 +46,8 @@ const upload = multer({
     }
     cb(null, true)
   },
-  limits: { // limited at 5 Mo
+  limits: {
+    // limited at 5 Mo
     fileSize: 5000000
   }
 }).single('draftImageUrl')
@@ -53,19 +56,22 @@ const upload = multer({
 app.use('/images', express.static(staticDir)) // module to access images
 app.use('/images/inspirations', express.static(uploadDir)) // module to access images
 
+const clientOrigin = process.env.CLIENT_ORIGIN
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
+  res.header('Access-Control-Allow-Origin', clientOrigin) // req.headers.origin
   res.header('Access-Control-Allow-Methods', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, X-Access-Token')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, X-Access-Token'
+  )
   next()
 })
 
 /* ROUTES FOR INSPIRATIONS - GET, ADD, UPDATE, DELETE */
 
-app.get('/fo/inspirations', async (req, res) => { // get all inpirations
-  console.log('coucou')
+app.get('/fo/inspirations', async (req, res) => {
+  // get all inpirations
   const inspirations = await db.getInspirations()
-  console.log(inspirations)
   const publishedInspirations = inspirations
     .filter(i => i.publicationDate !== null)
     .map(i => {
@@ -79,17 +85,16 @@ app.get('/fo/inspirations', async (req, res) => { // get all inpirations
     })
     .sort((a, b) => b.publicationDate - a.publicationDate)
 
-  console.log(publishedInspirations)
-
   res.json(publishedInspirations)
   // gestion des erreurs .catch(err => console.error(error))
 })
 
-app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all inpirations
-  console.log(req.token.id)
+app.get('/bo/inspirations', auth.requireToken, async (req, res) => {
+  // get all inpirations
   const inspirations = await db.getUserInspirations(req.token.id)
-  const iSortByModificationDate = inspirations.sort((a, b) => b.modificationDate - a.modificationDate)
-  console.log(iSortByModificationDate)
+  const iSortByModificationDate = inspirations.sort(
+    (a, b) => b.modificationDate - a.modificationDate
+  )
 
   res.json(iSortByModificationDate)
 })
@@ -117,7 +122,8 @@ app.get('/bo/inspirations', auth.requireToken, async (req, res) => { // get all 
 //   }
 //   // gestion des erreurs .catch(err => console.error(error))
 // })
-app.get('/:side/inspirations/:id', async (req, res) => { // get one inspiration + TOKEN POUR USER INSPIRATIONS
+app.get('/:side/inspirations/:id', async (req, res) => {
+  // get one inspiration + TOKEN POUR USER INSPIRATIONS
   const id = Number(req.params.id)
   const side = req.params.side
   let inspiration = {}
@@ -131,32 +137,37 @@ app.get('/:side/inspirations/:id', async (req, res) => { // get one inspiration 
   res.json(inspiration)
 })
 
-app.post('/inspirations', auth.requireToken, awaitRoute(async req => { // create an inspiration
-  const title = req.body.title
-  const userId = req.token.id
-  console.log(userId)
-  const params = {
-    title: title,
-    color: '#f1f7ed',
-    image_url: 'default.jpeg',
-    small_description: '',
-    description: '',
-    draft_title: title,
-    draft_color: '#f1f7ed',
-    draft_image_url: 'default.jpeg',
-    draft_small_description: '',
-    draft_description: '',
-    is_draft: true,
-    user_id: userId
-  }
-  const { id } = await db.createInspiration(params)
+app.post(
+  '/inspirations',
+  auth.requireToken,
+  awaitRoute(async req => {
+    // create an inspiration
+    const title = req.body.title
+    const userId = req.token.id
+    const params = {
+      title: title,
+      color: '#f1f7ed',
+      image_url: 'default.jpeg',
+      small_description: '',
+      description: '',
+      draft_title: title,
+      draft_color: '#f1f7ed',
+      draft_image_url: 'default.jpeg',
+      draft_small_description: '',
+      draft_description: '',
+      is_draft: true,
+      user_id: userId
+    }
+    const { id } = await db.createInspiration(params)
 
-  return { id }
-}))
+    return { id }
+  })
+)
 // userId: req.token.id
 
-app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // update an inspiration
-  upload(req, res, (err) => {
+app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => {
+  // update an inspiration
+  upload(req, res, err => {
     if (err) {
       console.log('there is an error', err)
       if (err.code === 'LIMIT_FILE_SIZE') {
@@ -168,7 +179,13 @@ app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // 
     }
 
     const id = Number(req.params.id)
-    const { draftTitle, draftSmallDescription, draftDescription, draftColor, isDraft } = req.body
+    const {
+      draftTitle,
+      draftSmallDescription,
+      draftDescription,
+      draftColor,
+      isDraft
+    } = req.body
     const params = {
       draft_title: draftTitle,
       draft_small_description: draftSmallDescription,
@@ -178,7 +195,8 @@ app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // 
       modification_date: new Date()
     }
 
-    if (isDraft === 'true') { // save as draft
+    if (isDraft === 'true') {
+      // save as draft
       if (req.file) {
         params['draft_image_url'] = req.file.originalname
       }
@@ -186,7 +204,8 @@ app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // 
       db.updateInspiration(id, params)
         .then(() => res.json('ok'))
         .catch(next)
-    } else if (isDraft === 'false') { // publish
+    } else if (isDraft === 'false') {
+      // publish
       if (req.file) {
         params['image_url'] = req.file.originalname
         params['draft_image_url'] = req.file.originalname
@@ -206,12 +225,17 @@ app.post('/inspirations/:id', auth.requireToken, async (req, res, next) => { // 
   })
 })
 
-app.delete('/inspirations/:id', auth.requireToken, awaitRoute(async (req, res) => { // delete an inspiration
-  const id = Number(req.params.id)
-  await db.deleteInspiration(id)
+app.delete(
+  '/inspirations/:id',
+  auth.requireToken,
+  awaitRoute(async (req, res) => {
+    // delete an inspiration
+    const id = Number(req.params.id)
+    await db.deleteInspiration(id)
 
-  return 'deleted'
-}))
+    return 'deleted'
+  })
+)
 
 /* END OF ROUTES FOR INSPIRATIONS */
 
@@ -228,4 +252,4 @@ app.use((err, req, res, next) => {
   }
 })
 
-app.listen(5300, () => console.log(`j'écoute sur le port 5300`))
+app.listen(port, err => console.log(err || `j'écoute sur le port ${port}`))
