@@ -8,6 +8,7 @@
     "lint": "standard | snazzy",
     "start": "nodemon index.js",
     "deploy": "git push heroku master",
+    "postinstall": "knex migrate:latest --knexfile='./knexfile.js'",
     "test": "echo 'no tests'"
   },
   "repository": {
